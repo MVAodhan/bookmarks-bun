@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import { drizzle } from "drizzle-orm/node-postgres";
-
+import "dotenv/config";
 const globalForPool = global as unknown as { pool?: Pool };
 
 // Create a singleton pool

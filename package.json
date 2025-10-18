@@ -3,14 +3,18 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun run src/index.ts",
-    "drizzle:generate": "npx drizzle-kit generate",
-    "drizzle:migrate": "npx drizzle-kit migrate",
-    "drizzle:studio": "bunx drizzle-kit studio"
+    "generate": "npx drizzle-kit generate",
+    "migrate": "npx drizzle-kit migrate",
+    "studio": "bunx drizzle-kit studio"
   },
   "dependencies": {
+    "@hono/clerk-auth": "^3.0.3",
+    "@mozilla/readability": "^0.6.0",
+    "dompurify": "^3.3.0",
     "dotenv": "^17.2.3",
     "drizzle-orm": "^0.44.6",
     "hono": "^4.9.11",
+    "linkedom": "^0.18.12",
     "pg": "^8.16.3"
   },
   "devDependencies": {
