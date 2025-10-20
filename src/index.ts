@@ -1,10 +1,10 @@
 import { Hono } from "hono";
 import { db } from "./lib/db";
 import { bookmarksTable } from "./db/schema";
+import { parseHTML } from "linkedom";
 import DOMPurify from "dompurify";
 import "dotenv/config";
 import { Readability } from "@mozilla/readability";
-import { parseHTML } from "linkedom";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { basicAuth } from "hono/basic-auth";
 import { serve } from "bun";
@@ -71,10 +71,6 @@ app.post("/user/url", async (c) => {
 
   // console.log(article);
   if (article?.content) {
-    const { window } = parseHTML("");
-    const purify = DOMPurify(window);
-    const cleanArticle = purify.sanitize(article.content);
-
     const res = await fetch(
       "https://n8n.aotearoa.cc/webhook-test/a1213a04-64db-4516-af0a-f1d5df639cc9",
       {
@@ -84,7 +80,7 @@ app.post("/user/url", async (c) => {
           Authorization: `Basic ${encodedCredentials}`,
         },
         body: JSON.stringify({
-          cleanArticle,
+          cleanArticle: article.content,
           url: body.url,
         }),
       }
@@ -102,6 +98,7 @@ app.post("/server/summary", async (c) => {
   const res = await db.insert(bookmarksTable).values({
     url: body.url,
     description: body.summary,
+    tags: body.tags,
   });
   console.log(res);
   return c.json({
