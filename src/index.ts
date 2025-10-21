@@ -13,7 +13,7 @@ const app = new Hono();
 app.use(
   "/user/*",
   cors({
-    origin: [process.env.CORS_ORIGIN!], // your React dev server
+    origin: ["https://calm-travesseiro-6f9c79.netlify.app"], // your React dev server
     credentials: true,
   })
 );
