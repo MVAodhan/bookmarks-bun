@@ -10,7 +10,6 @@ import { basicAuth } from "hono/basic-auth";
 import { serve } from "bun";
 const app = new Hono();
 
-app.use("/user/*", clerkMiddleware());
 app.use(
   "/user/*",
   cors({
@@ -18,6 +17,7 @@ app.use(
     credentials: true,
   })
 );
+app.use("/user/*", clerkMiddleware());
 app.use(
   "/server/*",
   basicAuth({
