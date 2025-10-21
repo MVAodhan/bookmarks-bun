@@ -1,8 +1,8 @@
 import { Hono } from "hono";
+import { cors } from "hono/cors";
 import { db } from "./lib/db";
 import { bookmarksTable } from "./db/schema";
 import { parseHTML } from "linkedom";
-import DOMPurify from "dompurify";
 import "dotenv/config";
 import { Readability } from "@mozilla/readability";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
@@ -11,6 +11,13 @@ import { serve } from "bun";
 const app = new Hono();
 
 app.use("/user/*", clerkMiddleware());
+app.use(
+  "/user/*",
+  cors({
+    origin: [process.env.CORS_ORIGIN!], // your React dev server
+    credentials: true,
+  })
+);
 app.use(
   "/server/*",
   basicAuth({
@@ -100,7 +107,6 @@ app.post("/server/summary", async (c) => {
     description: body.summary,
     tags: body.tags,
   });
-  console.log(res);
   return c.json({
     success: true,
   });
