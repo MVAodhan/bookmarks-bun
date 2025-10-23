@@ -1,11 +1,11 @@
 {
-  "id": "e4e92794-3ad7-4c44-b4b0-b7eaa1423c67",
+  "id": "62fb2ad9-b739-41b5-89f4-2064c2432939",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
-    "public.users": {
-      "name": "users",
+    "public.urls": {
+      "name": "urls",
       "schema": "",
       "columns": {
         "id": {
@@ -15,7 +15,7 @@
           "notNull": true,
           "identity": {
             "type": "always",
-            "name": "users_id_seq",
+            "name": "urls_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -24,6 +24,12 @@
             "cache": "1",
             "cycle": false
           }
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
         },
         "url": {
           "name": "url",

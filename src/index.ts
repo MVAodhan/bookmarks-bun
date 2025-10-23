@@ -10,13 +10,13 @@ import { basicAuth } from "hono/basic-auth";
 import { serve } from "bun";
 const app = new Hono();
 
-app.use(
-  "/user/*",
-  cors({
-    origin: ["https://calm-travesseiro-6f9c79.netlify.app"], // your React dev server
+app.use("/user/*", async (c, next) => {
+  const corsMiddlewareHandler = cors({
+    origin: "http://localhost:3000",
     credentials: true,
-  })
-);
+  });
+  return corsMiddlewareHandler(c, next);
+});
 app.use("/user/*", clerkMiddleware());
 app.use(
   "/server/*",
@@ -56,11 +56,13 @@ app.post("/user/url", async (c) => {
       message: "You are not logged in. Please login to add a bookmark",
     });
   }
+  // console.log(auth.userId);
+
   const body = await c.req.json();
+  console.log(body);
   const username = process.env.BASIC_AUTH_USERNAME!;
   const password = process.env.BASIC_AUTH_PASSWORD!;
 
-  // Encode the username and password in Base64
   const encodedCredentials = btoa(`${username}:${password}`);
 
   const response = await fetch(body.url);
@@ -76,7 +78,6 @@ app.post("/user/url", async (c) => {
   }
   const article = reader?.parse();
 
-  // console.log(article);
   if (article?.content) {
     const res = await fetch(
       "https://n8n.aotearoa.cc/webhook-test/a1213a04-64db-4516-af0a-f1d5df639cc9",
@@ -89,11 +90,13 @@ app.post("/user/url", async (c) => {
         body: JSON.stringify({
           cleanArticle: article.content,
           url: body.url,
+          user: auth.userId,
         }),
       }
     );
     console.log(await res.json());
   }
+
   return c.json({
     message: "Bookmark processing ",
   });
@@ -106,6 +109,7 @@ app.post("/server/summary", async (c) => {
     url: body.url,
     description: body.summary,
     tags: body.tags,
+    user_id: body.userId,
   });
   return c.json({
     success: true,
