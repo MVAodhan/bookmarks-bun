@@ -13,7 +13,7 @@ const app = new Hono();
 
 app.use("/user/*", async (c, next) => {
   const corsMiddlewareHandler = cors({
-    origin: process.env.CORS_ORIGIN!,
+    origin: "https://calm-travesseiro-6f9c79.netlify.app/*",
     credentials: true,
   });
   return corsMiddlewareHandler(c, next);
