@@ -12,11 +12,10 @@ import { eq } from "drizzle-orm";
 const app = new Hono();
 
 app.use("/user/*", async (c, next) => {
-  const corsMiddlewareHandler = cors({
+  cors({
     origin: "https://calm-travesseiro-6f9c79.netlify.app",
     credentials: true,
   });
-  return corsMiddlewareHandler(c, next);
 });
 app.use("/user/*", clerkMiddleware());
 app.use(
