@@ -8,11 +8,12 @@ import { Readability } from "@mozilla/readability";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { basicAuth } from "hono/basic-auth";
 import { serve } from "bun";
+import { eq } from "drizzle-orm";
 const app = new Hono();
 
 app.use("/user/*", async (c, next) => {
   const corsMiddlewareHandler = cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CORS_ORIGIN!,
     credentials: true,
   });
   return corsMiddlewareHandler(c, next);
@@ -35,7 +36,10 @@ app.get("/user/bookmarks", async (c) => {
       message: "You are not logged in. Please log in to see bookmarks",
     });
   }
-  const res = await db.select().from(bookmarksTable);
+  const res = await db
+    .select()
+    .from(bookmarksTable)
+    .where(eq(bookmarksTable.user_id, auth.userId));
   return c.json({
     res,
   });
