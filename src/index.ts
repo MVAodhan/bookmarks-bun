@@ -76,21 +76,18 @@ app.post("/user/url", async (c) => {
   const article = reader?.parse();
 
   if (article?.content) {
-    const res = await fetch(
-      "https://n8n.aotearoa.cc/webhook-test/a1213a04-64db-4516-af0a-f1d5df639cc9",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Basic ${encodedCredentials}`,
-        },
-        body: JSON.stringify({
-          cleanArticle: article.content,
-          url: body.url,
-          user: auth.userId,
-        }),
-      }
-    );
+    const res = await fetch(process.env.WEBHOOK_URL!, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${encodedCredentials}`,
+      },
+      body: JSON.stringify({
+        cleanArticle: article.content,
+        url: body.url,
+        user: auth.userId,
+      }),
+    });
   }
 
   return c.json({
