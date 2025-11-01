@@ -11,12 +11,6 @@ import { serve } from "bun";
 import { eq } from "drizzle-orm";
 const app = new Hono();
 
-app.use("/user/*", async (c, next) => {
-  cors({
-    origin: "https://calm-travesseiro-6f9c79.netlify.app",
-    credentials: true,
-  });
-});
 app.use("/user/*", clerkMiddleware());
 app.use(
   "/server/*",
@@ -35,12 +29,14 @@ app.get("/user/bookmarks", async (c) => {
       message: "You are not logged in. Please log in to see bookmarks",
     });
   }
+
   const res = await db
     .select()
     .from(bookmarksTable)
     .where(eq(bookmarksTable.user_id, auth.userId));
+
   return c.json({
-    res,
+    res: res,
   });
 });
 app.get("/health", async (c) => {
@@ -59,10 +55,8 @@ app.post("/user/url", async (c) => {
       message: "You are not logged in. Please login to add a bookmark",
     });
   }
-  // console.log(auth.userId);
 
   const body = await c.req.json();
-  console.log(body);
   const username = process.env.BASIC_AUTH_USERNAME!;
   const password = process.env.BASIC_AUTH_PASSWORD!;
 
@@ -97,7 +91,6 @@ app.post("/user/url", async (c) => {
         }),
       }
     );
-    console.log(await res.json());
   }
 
   return c.json({
